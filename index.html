@@ -190,10 +190,22 @@
                 console.error('Error fetching grade data:', error);
                 throw error;
             }
-            <div class="calculator-link">
-    <a href="grade-calculator.html" class="btn">Current Course Grade Calculator</a>
+           <div id="grade-summary" style="font-size: 20px; color: white; background: black; padding: 20px; border: 2px solid cyan; width: fit-content; margin: auto;">
+  Loading grade...
 </div>
+
+<script>
+  async function fetchGrade() {
+    const response = await fetch(https://script.google.com/macros/s/AKfycbxMDqFswzTEdrGLQ5mGySTmfBTGiQCdy6HM86NiK03-W8rqNxb7HD-a3xM7Kk-ZXZSb/exec);
+    const data = await response.json();
+    document.getElementById('grade-summary').innerHTML = `
+      <strong>Grade Summary</strong><br>
+      ${data.percentage}% (${data.earned} / ${data.possible})
+    `;
+  }
+  
+  fetchGrade();
+</script>
         }
-    </script>
 </body>
 </html>
