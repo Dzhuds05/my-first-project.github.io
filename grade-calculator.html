@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Current Course Grade Calculator</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+        }
+        .grade-display {
+            text-align: center;
+            margin: 20px 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            display: none;
+        }
+        .grade-percentage {
+            font-size: 36px;
+            font-weight: bold;
+            color: #3498db;
+        }
+        .grade-fraction {
+            font-size: 24px;
+            color: #2c3e50;
+            margin-top: 10px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .error {
+            color: #e74c3c;
+            text-align: center;
+            margin-top: 10px;
+        }
+        .loading {
+            text-align: center;
+            margin: 20px 0;
+            display: none;
+        }
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border-left-color: #3498db;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Current Course Grade Calculator</h1>
+        
+        <div id="passwordSection">
+            <div class="form-group">
+                <label for="password">Enter Password to View Your Grade:</label>
+                <input type="password" id="password" placeholder="Enter password">
+            </div>
+            <button id="checkPassword">View My Grade</button>
+            <div id="passwordError" class="error"></div>
+        </div>
+        
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            <p>Loading your grade data...</p>
+        </div>
+        
+        <div id="gradeDisplay" class="grade-display">
+            <div class="grade-percentage" id="gradePercentage">85%</div>
+            <div class="grade-fraction" id="gradeFraction">170/200 points</div>
+        </div>
+    </div>
+    
+    <script>
+        // The correct password - CHANGE THIS!
+        const CORRECT_PASSWORD = "mypassword123"; 
+        
+        document.getElementById('checkPassword').addEventListener('click', function() {
+            const password = document.getElementById('password').value;
+            const passwordError = document.getElementById('passwordError');
+            const loading = document.getElementById('loading');
+            const gradeDisplay = document.getElementById('gradeDisplay');
+            
+            // Clear any previous errors
+            passwordError.textContent = '';
+            
+            if (password === CORRECT_PASSWORD) {
+                // Hide password section
+                document.getElementById('passwordSection').style.display = 'none';
+                
+                // Show loading indicator
+                loading.style.display = 'block';
+                
+                // Fetch grade data from Apps Script
+                fetchGradeData()
+                    .then(data => {
+                        // Hide loading indicator
+                        loading.style.display = 'none';
+                        
+                        // Show grade display
+                        gradeDisplay.style.display = 'block';
+                        
+                        // Update grade display with data
+                        updateGradeDisplay(data);
+                    })
+                    .catch(error => {
+                        // Hide loading indicator
+                        loading.style.display = 'none';
+                        
+                        // Show error
+                        passwordError.textContent = 'Error fetching grade data. Please try again later.';
+                        console.error('Error:', error);
+                        
+                        // Show password section again
+                        document.getElementById('passwordSection').style.display = 'block';
+                    });
+            } else {
+                passwordError.textContent = 'Incorrect password. Please try again.';
+            }
+        });
+        
+        function updateGradeDisplay(data) {
+            document.getElementById('gradePercentage').textContent = data.percentage + '%';
+            document.getElementById('gradeFraction').textContent = 
+                data.pointsEarned + '/' + data.totalPoints + ' points';
+        }
+        
+        async function fetchGradeData() {
+            try {
+                // Replace this URL with your published Apps Script web app URL
+                const scriptUrl = 'https://script.google.com/macros/s/AKfycbyBDykTdpGomzs3rvtr5_Shb_JdMY-lX7GhHqGrQyo_E-ONKKkt2i9Edki7bPpcYPGF/exec';
+                
+                const response = await fetch(scriptUrl);
+                const data = await response.json();
+                
+                return data;
+            } catch (error) {
+                console.error('Error fetching grade data:', error);
+                throw error;
+            }
+        }
+    </script>
+</body>
+</html>
