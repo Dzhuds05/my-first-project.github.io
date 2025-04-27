@@ -53,13 +53,47 @@
 <script>
   async function fetchGradeBox() {
     try {
-      const response = await fetch('https://script.google.com/macros/s/AKfycbwZDi8chxFZdjn-30DavU1yJTT4hRMXZBOKEvo8L2AoRJLIgkPdo2xVBTTIXamMS9pG/exec');
+      const response = await fetch('https://script.google.com/macros/s/AKfycbw4e-ufE3trCp0UjRI36ZWdoNediwSDzUSM23Fgyg7qLAv5iYUFcWMXuzuVR5NqrgDV/exec');
       const data = await response.json();
       
+      // Update the small top-right grade box
       document.getElementById('gradeBox').innerHTML = `
         <strong>Course Grade</strong><br>
-        ${data.percentage}% (${data.earned} / ${data.possible})
+        ${data.totalPercentage}% (${data.totalEarned} / ${data.totalPossible})
       `;
+
+      // Create full table for breakdown
+      const breakdown = document.createElement('div');
+      breakdown.innerHTML = `
+        <h2 style="color: magenta;">Grade Breakdown</h2>
+        <table border="1" style="width:100%; text-align:center; background:black; color:cyan; border-collapse: collapse;">
+          <thead>
+            <tr>
+              <th>Assignment Name</th>
+              <th>Type</th>
+              <th>Earned Points</th>
+              <th>Total Points</th>
+              <th>Course</th>
+              <th>Percentage</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${data.assignments.map(item => `
+              <tr>
+                <td>${item.name}</td>
+                <td>${item.type}</td>
+                <td>${item.earned}</td>
+                <td>${item.possible}</td>
+                <td>${item.course}</td>
+                <td>${item.percentage}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      `;
+      
+      document.body.appendChild(breakdown);
+
     } catch (error) {
       document.getElementById('gradeBox').innerHTML = "Error loading grade.";
       console.error('Error fetching grade:', error);
