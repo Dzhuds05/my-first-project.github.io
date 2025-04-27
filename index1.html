@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Current Course Grade Calculator</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f8ff;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #0066cc;
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 800px;
+            margin: 20px auto;
+        }
+
+        .grade-summary {
+            background-color: #fff;
+            border: 2px solid #0066cc;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .grade-breakdown {
+            background-color: #fff;
+            border: 2px solid #0066cc;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .breakdown-title {
+            color: #0066cc;
+            font-size: 22px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .assignment-card {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .assignment-title {
+            color: #0066cc;
+            font-size: 18px;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .assignment-detail {
+            color: #333;
+            margin: 5px 0;
+        }
+
+        .login-form {
+            background-color: #fff;
+            border: 2px solid #0066cc;
+            border-radius: 10px;
+            padding: 20px;
+            width: 90%;
+            max-width: 400px;
+            margin: 100px auto;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            background-color: #fff;
+            border: 1px solid #0066cc;
+            color: #333;
+            border-radius: 5px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #0066cc;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 10px;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background-color: #004c99;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .back-button {
+            margin-top: 20px;
+            width: auto;
+            padding: 8px 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="login-screen" class="login-form">
+        <h2 style="color: #0066cc; text-align: center;">Grade Access</h2>
+        <input type="password" id="password-input" placeholder="Enter password to view grades">
+        <button onclick="checkPassword()">ACCESS</button>
+    </div>
+
+    <!-- Grade Display (Initially Hidden) -->
+    <div id="grade-display" class="hidden">
+        <h1>CURRENT COURSE GRADE</h1>
+        
+        <div class="container">
+            <div class="grade-summary" id="grade-summary">
+                Grade Summary<br>
+                <span id="grade-percentage">0.0%</span> (<span id="points-earned">0.00</span> / <span id="points-total">0.00</span>)
+            </div>
+            
+            <div class="grade-breakdown">
+                <div class="breakdown-title">Grade Breakdown</div>
+                <div id="assignments-container">
+                    <!-- Assignment cards will be added here dynamically -->
+                </div>
+            </div>
+            
+            <button class="back-button" onclick="logout()">LOGOUT</button>
+        </div>
+    </div>
+
+    <script>
+        // For demo purposes, we'll use a simple password
+        const DEMO_PASSWORD = "password123";
+        
+        // Mock data - in real implementation, this would be fetched from Google Sheets
+        const courseData = {
+            totalPoints: 45.00,
+            earnedPoints: 32.00,
+            percentage: 71.1,
+            assignments: [
+                {
+                    title: "Current Attendance (Attendance)",
+                    received: "15",
+                    total: "15",
+                    percentage: "100.0%",
+                    course: "DL"
+                },
+                {
+                    title: "Week 2 - Find Me! (assignment)",
+                    received: "3",
+                    total: "3",
+                    percentage: "100.0%",
+                    course: "DL"
+                },
+                {
+                    title: "Week 3 - CLI (assignment)",
+                    received: "3",
+                    total: "3",
+                    percentage: "100.0%",
+                    course: "DL"
+                },
+                {
+                    title: "Week 4 - Quiz 1 (quiz)",
+                    received: "5",
+                    total: "5",
+                    percentage: "100.0%",
+                    course: "DL"
+                },
+                {
+                    title: "Week 4 - Virtual Library (assignment)",
+                    received: "3",
+                    total: "3",
+                    percentage: "100.0%",
+                    course: "DL"
+                },
+                {
+                    title: "Week 5 - Midterm Project (project)",
+                    received: "3",
+                    total: "10",
+                    percentage: "30.0%",
+                    course: "DL"
+                }
+            ]
+        };
+
+        // Check if the entered password is correct
+        function checkPassword() {
+            const enteredPassword = document.getElementById("password-input").value;
+            
+            if (enteredPassword === DEMO_PASSWORD) {
+                document.getElementById("login-screen").classList.add("hidden");
+                document.getElementById("grade-display").classList.remove("hidden");
+                loadGradeData();
+            } else {
+                alert("Incorrect password. Access denied.");
+            }
+        }
+
+        // Logout function
+        function logout() {
+            document.getElementById("password-input").value = "";
+            document.getElementById("login-screen").classList.remove("hidden");
+            document.getElementById("grade-display").classList.add("hidden");
+        }
+
+        // Load and display grade data
+        function loadGradeData() {
+            // In a real implementation, this would fetch data from Google Sheets
+            // using the Google Sheets API or fetch from a server that accesses Google Sheets
+            
+            // For now, we'll use the mock data
+            document.getElementById("grade-percentage").textContent = courseData.percentage + "%";
+            document.getElementById("points-earned").textContent = courseData.earnedPoints.toFixed(2);
+            document.getElementById("points-total").textContent = courseData.totalPoints.toFixed(2);
+            
+            // Generate assignment cards
+            const assignmentsContainer = document.getElementById("assignments-container");
+            assignmentsContainer.innerHTML = ""; // Clear existing content
+            
+            courseData.assignments.forEach(assignment => {
+                const card = document.createElement("div");
+                card.className = "assignment-card";
+                
+                card.innerHTML = `
+                    <div class="assignment-title">${assignment.title}</div>
+                    <div class="assignment-detail">Received: ${assignment.received} / ${assignment.total}</div>
+                    <div class="assignment-detail">Percentage: ${assignment.percentage}</div>
+                    <div class="assignment-detail">Course: ${assignment.course}</div>
+                `;
+                
+                assignmentsContainer.appendChild(card);
+            });
+        }
+
+        // Add event listener for Enter key on password input
+        document.getElementById("password-input").addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                checkPassword();
+            }
+        });
+    </script>
+
+    <!-- This is where you would include the code to connect to Google Sheets API -->
+    <script>
+        // Function to fetch data from Google Sheets via the Apps Script web app
+        function fetchGradeDataFromGoogleSheets() {
+            // Replace this URL with your actual deployed Google Apps Script web app URL
+            const webAppUrl = "YOUR_APPS_SCRIPT_WEB_APP_URL";
+            const password = DEMO_PASSWORD; // Use the same password as in Apps Script
+            
+            return fetch(`${webAppUrl}?password=${password}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        throw new Error(data.error);
+                    }
+                    
+                    // Update the courseData with fetched data
+                    courseData = data;
+                    
+                    // Update the UI with the new data
+                    loadGradeData();
+                    
+                    return data;
+                })
+                .catch(error => {
+                    console.error("Error fetching grade data:", error);
+                    alert("Error loading grade data. Please try again later.");
+                });
+        }
+
+        // To use the Google Sheets fetching in production, replace the direct call to
+        // loadGradeData() in the checkPassword() function with fetchGradeDataFromGoogleSheets()
+    </script>
+</body>
+</html>
