@@ -271,7 +271,7 @@
         // Function to fetch data from Google Sheets via the Apps Script web app
         function fetchGradeDataFromGoogleSheets() {
             // Replace this URL with your actual deployed Google Apps Script web app URL
-            const webAppUrl = "YOUR_APPS_SCRIPT_WEB_APP_URL";
+            const webAppUrl = "https://script.google.com/macros/s/AKfycbyebGlPdoUxkTW_Ws1MopXr_9IM97EzYC_9_Xf1J3nUEPBhDaL1oUUtvUtbsJCp-DUh/exec";
             const password = DEMO_PASSWORD; // Use the same password as in Apps Script
             
             return fetch(`${webAppUrl}?password=${password}`)
@@ -296,7 +296,7 @@
         }
 
         // To use the Google Sheets fetching in production, replace the direct call to
-        // loadGradeData() in the checkPassword() function with fetchGradeDataFromGoogleSheets()
+        // fetchGradeDataFromGoogleSheets(); in the checkPassword() function with fetchGradeDataFromGoogleSheets()
     </script>
 </body>
 </html>
