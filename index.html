@@ -7,6 +7,21 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div id="gradeBox" style="
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: black;
+  color: cyan;
+  padding: 15px;
+  border: 2px solid cyan;
+  border-radius: 8px;
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+  z-index: 1000;
+">
+  Loading grade...
+</div>
     <header>
         <h1>Welcome to My Assignment Page</h1>
         <p>Sharing my academic work and projects</p>
@@ -35,6 +50,24 @@
             <button>View Assignments</button>
         </a>
     </section>
+<script>
+  async function fetchGradeBox() {
+    try {
+      const response = await fetch(https://script.google.com/macros/s/AKfycbxMDqFswzTEdrGLQ5mGySTmfBTGiQCdy6HM86NiK03-W8rqNxb7HD-a3xM7Kk-ZXZSb/exec);
+      const data = await response.json();
+      
+      document.getElementById('gradeBox').innerHTML = `
+        <strong>Course Grade</strong><br>
+        ${data.percentage}% (${data.earned} / ${data.possible})
+      `;
+    } catch (error) {
+      document.getElementById('gradeBox').innerHTML = "Error loading grade.";
+      console.error('Error fetching grade:', error);
+    }
+  }
 
+  fetchGradeBox();
+</script>
+    
 </body>
 </html>
