@@ -39,3 +39,33 @@ button {
 button:hover {
     background-color: #0056b3;
 }
+section.tool {
+    background-color: black;
+    color: cyan;
+    padding: 20px;
+    margin: 20px;
+    border: 2px solid cyan;
+    border-radius: 8px;
+    font-family: Arial, sans-serif;
+}
+
+section.tool h2 {
+    color: magenta;
+}
+
+section.tool a button {
+    background-color: cyan;
+    color: black;
+    border: none;
+    padding: 10px 20px;
+    margin-top: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+section.tool a button:hover {
+    background-color: magenta;
+    color: white;
+}
