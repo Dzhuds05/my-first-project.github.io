@@ -1,71 +1,144 @@
+:root {
+    --primary: #0066cc;
+    --secondary: #00cccc;
+    --dark: #111827;
+    --light: #f9fafb;
+    --tool-bg: #000000;
+    --tool-text: #00ffff;
+    --tool-accent: #ff00ff;
+}
+
 body {
-    font-family: Arial, sans-serif;
-    text-align: center;
-    background-color: #f4f4f4;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--dark);
+    background-color: var(--light);
     margin: 0;
     padding: 0;
 }
 
+/* Grade Box Styles */
+.grade-box {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: white;
+    color: var(--primary);
+    padding: 15px;
+    border: 2px solid var(--secondary);
+    border-radius: 8px;
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    z-index: 1000;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.grade-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Header Styles */
 header {
-    background-color: #007bff;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
     color: white;
+    text-align: center;
+    padding: 40px 0;
+    margin-bottom: 30px;
+}
+
+/* Section Styles */
+section {
+    margin-bottom: 30px;
     padding: 20px;
+    border-radius: 8px;
+    background-color: white;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
 .info, .upload, .assignments {
-    background: white;
     margin: 20px auto;
-    padding: 20px;
-    border-radius: 8px;
-    width: 80%;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    max-width: 100%;
 }
 
-h1, h2 {
-    color: #333;
-}
-
-button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    font-size: 16px;
-    cursor: pointer;
-    border-radius: 5px;
-    margin-top: 10px;
-}
-
-button:hover {
-    background-color: #0056b3;
-}
+/* Tool Section Styles */
 section.tool {
-    background-color: black;
-    color: cyan;
-    padding: 20px;
-    margin: 20px;
-    border: 2px solid cyan;
-    border-radius: 8px;
-    font-family: Arial, sans-serif;
+    background-color: var(--tool-bg);
+    color: var(--tool-text);
+    border: 2px solid var(--tool-text);
 }
 
 section.tool h2 {
-    color: magenta;
+    color: var(--tool-accent);
 }
 
-section.tool a button {
-    background-color: cyan;
-    color: black;
+/* Button Styles */
+.btn-primary {
+    background-color: var(--primary);
+    color: white;
     border: none;
     padding: 10px 20px;
-    margin-top: 10px;
-    font-size: 16px;
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s;
+    font-size: 16px;
 }
 
-section.tool a button:hover {
-    background-color: magenta;
+.btn-primary:hover {
+    background-color: var(--secondary);
+}
+
+.btn-tool {
+    background-color: var(--tool-text);
+    color: var(--tool-bg);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+    font-size: 16px;
+}
+
+.btn-tool:hover {
+    background-color: var(--tool-accent);
     color: white;
+}
+
+/* Modal Styles */
+.password-modal .modal-header {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        padding: 0 15px;
+    }
+    
+    .grade-box {
+        position: static;
+        margin: 20px auto;
+        width: 80%;
+        max-width: 300px;
+    }
+    
+    header {
+        padding: 20px 0;
+    }
+}
+
+@media (max-width: 480px) {
+    section {
+        padding: 15px;
+    }
+    
+    h1 {
+        font-size: 24px;
+    }
+    
+    h2 {
+        font-size: 20px;
+    }
 }
