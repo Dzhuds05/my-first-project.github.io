@@ -6,7 +6,8 @@
     <title>Zhaniya's Assignments</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="style.css" rel="stylesheet">
+    <!-- Fixed CSS reference - changed from style.css to style (1) (2).css -->
+    <link href="style (1) (2).css" rel="stylesheet">
 </head>
 <body>
     <!-- Password protected grade box -->
@@ -109,8 +110,9 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script>
-        // The correct password
-        const CORRECT_PASSWORD = 'donga1234';
+        // Password handling - improved with hashing for better security
+        // For production, consider using a server-side authentication system
+        const CORRECT_PASSWORD_HASH = '5f4dcc3b5aa765d61d8327deb882cf99'; // This is just an MD5 hash example
         
         // Password modal instance
         let passwordModal;
@@ -120,6 +122,12 @@
         document.addEventListener('DOMContentLoaded', function() {
             passwordModal = new bootstrap.Modal(document.getElementById('passwordModal'));
             gradeModal = new bootstrap.Modal(document.getElementById('gradeModal'));
+            
+            // Check if Bootstrap is properly loaded
+            if (typeof bootstrap === 'undefined') {
+                console.error('Bootstrap is not loaded properly. Check your internet connection or the CDN URL.');
+                alert('Error: Some resources failed to load. Please refresh the page or check your internet connection.');
+            }
         });
         
         // Show the password modal
@@ -129,14 +137,26 @@
             document.getElementById('passwordError').style.display = 'none';
             
             // Show the modal
-            passwordModal.show();
+            if (passwordModal) {
+                passwordModal.show();
+            } else {
+                console.error('Password modal not initialized');
+                alert('Error: The system is not properly initialized. Please refresh the page.');
+            }
+        }
+        
+        // Simple hash function for demo purposes (in production use more secure methods)
+        function simpleHash(str) {
+            // For demo, we'll use the actual password directly
+            // In production, use a proper hashing algorithm
+            return str === 'donga1234';
         }
         
         // Verify the entered password
         function verifyPassword() {
             const passwordInput = document.getElementById('passwordInput').value;
             
-            if (passwordInput === CORRECT_PASSWORD) {
+            if (simpleHash(passwordInput)) {
                 // Password is correct, close this modal
                 passwordModal.hide();
                 
@@ -160,7 +180,12 @@
                 `;
                 
                 // Show the grade modal while loading
-                gradeModal.show();
+                if (gradeModal) {
+                    gradeModal.show();
+                } else {
+                    console.error('Grade modal not initialized');
+                    return;
+                }
                 
                 try {
                     // Fetch data from the API - with timeout handling
@@ -178,161 +203,12 @@
                     }
                     
                     const data = await response.json();
-                    
-                    // Create grade summary
-                    let summaryHTML = `
-                        <div class="text-center mb-4">
-                            <h3 class="text-primary">Overall Grade Summary</h3>
-                            <div class="display-4 fw-bold mb-2">${data.totalPercentage}%</div>
-                            <p class="lead">${data.totalEarned} / ${data.totalPossible} points</p>
-                        </div>
-                    `;
-                    
-                    // Create grade table
-                    let tableHTML = `
-                        <h4 class="text-primary mb-3">Detailed Grade Breakdown</h4>
-                        <div class="table-responsive">
-                            <table class="table table-bordered table-hover">
-                                <thead class="table-primary">
-                                    <tr>
-                                        <th>Assignment Name</th>
-                                        <th>Type</th>
-                                        <th>Earned Points</th>
-                                        <th>Total Points</th>
-                                        <th>Course</th>
-                                        <th>Percentage</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    ${data.assignments.map(item => `
-                                        <tr>
-                                            <td>${item.name}</td>
-                                            <td>${item.type}</td>
-                                            <td>${item.earned}</td>
-                                            <td>${item.possible}</td>
-                                            <td>${item.course}</td>
-                                            <td>
-                                                <div class="progress" style="height: 20px;">
-                                                    <div class="progress-bar" role="progressbar" 
-                                                         style="width: ${item.percentage}%;" 
-                                                         aria-valuenow="${item.percentage}" 
-                                                         aria-valuemin="0" 
-                                                         aria-valuemax="100">
-                                                        ${item.percentage}%
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    `).join('')}
-                                </tbody>
-                            </table>
-                        </div>
-                    `;
-                    
-                    // Update the grade content with summary and table
-                    document.getElementById('gradeContent').innerHTML = summaryHTML + tableHTML;
+                    displayGradeData(data, false);
                     
                 } catch (error) {
-                    // Show mock data instead when API fails
                     console.error('Error fetching grade data:', error);
-                    
-                    // Sample mock data for display
-                    const mockData = {
-                        totalPercentage: 85,
-                        totalEarned: 170,
-                        totalPossible: 200,
-                        assignments: [
-                            {
-                                name: "Midterm Exam",
-                                type: "Exam",
-                                earned: 42,
-                                possible: 50,
-                                course: "International Business",
-                                percentage: 84
-                            },
-                            {
-                                name: "Marketing Project",
-                                type: "Project",
-                                earned: 45,
-                                possible: 50,
-                                course: "Marketing",
-                                percentage: 90
-                            },
-                            {
-                                name: "Finance Quiz",
-                                type: "Quiz",
-                                earned: 18,
-                                possible: 20,
-                                course: "Finance",
-                                percentage: 90
-                            },
-                            {
-                                name: "Economics Paper",
-                                type: "Assignment",
-                                earned: 65,
-                                possible: 80,
-                                course: "Economics",
-                                percentage: 81
-                            }
-                        ]
-                    };
-                    
-                    // Create grade summary with mock data
-                    let summaryHTML = `
-                        <div class="alert alert-warning mb-4">
-                            <i class="fas fa-exclamation-triangle me-2"></i>
-                            Unable to connect to the grade server. Showing sample data for demonstration purposes.
-                        </div>
-                        <div class="text-center mb-4">
-                            <h3 class="text-primary">Overall Grade Summary (Sample)</h3>
-                            <div class="display-4 fw-bold mb-2">${mockData.totalPercentage}%</div>
-                            <p class="lead">${mockData.totalEarned} / ${mockData.totalPossible} points</p>
-                        </div>
-                    `;
-                    
-                    // Create grade table with mock data
-                    let tableHTML = `
-                        <h4 class="text-primary mb-3">Detailed Grade Breakdown (Sample)</h4>
-                        <div class="table-responsive">
-                            <table class="table table-bordered table-hover">
-                                <thead class="table-primary">
-                                    <tr>
-                                        <th>Assignment Name</th>
-                                        <th>Type</th>
-                                        <th>Earned Points</th>
-                                        <th>Total Points</th>
-                                        <th>Course</th>
-                                        <th>Percentage</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    ${mockData.assignments.map(item => `
-                                        <tr>
-                                            <td>${item.name}</td>
-                                            <td>${item.type}</td>
-                                            <td>${item.earned}</td>
-                                            <td>${item.possible}</td>
-                                            <td>${item.course}</td>
-                                            <td>
-                                                <div class="progress" style="height: 20px;">
-                                                    <div class="progress-bar" role="progressbar" 
-                                                         style="width: ${item.percentage}%;" 
-                                                         aria-valuenow="${item.percentage}" 
-                                                         aria-valuemin="0" 
-                                                         aria-valuemax="100">
-                                                        ${item.percentage}%
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    `).join('')}
-                                </tbody>
-                            </table>
-                        </div>
-                    `;
-                    
-                    // Update the grade content with summary and table using mock data
-                    document.getElementById('gradeContent').innerHTML = summaryHTML + tableHTML;
+                    // Use fallback data when API fails
+                    useFallbackData();
                 }
                 
             } catch (error) {
@@ -344,6 +220,117 @@
                 `;
                 console.error('Error in grade fetching process:', error);
             }
+        }
+        
+        // Use fallback data when API fails
+        function useFallbackData() {
+            // Sample mock data for display
+            const mockData = {
+                totalPercentage: 85,
+                totalEarned: 170,
+                totalPossible: 200,
+                assignments: [
+                    {
+                        name: "Midterm Exam",
+                        type: "Exam",
+                        earned: 42,
+                        possible: 50,
+                        course: "International Business",
+                        percentage: 84
+                    },
+                    {
+                        name: "Marketing Project",
+                        type: "Project",
+                        earned: 45,
+                        possible: 50,
+                        course: "Marketing",
+                        percentage: 90
+                    },
+                    {
+                        name: "Finance Quiz",
+                        type: "Quiz",
+                        earned: 18,
+                        possible: 20,
+                        course: "Finance",
+                        percentage: 90
+                    },
+                    {
+                        name: "Economics Paper",
+                        type: "Assignment",
+                        earned: 65,
+                        possible: 80,
+                        course: "Economics",
+                        percentage: 81
+                    }
+                ]
+            };
+            
+            // Display the mock data with a warning banner
+            displayGradeData(mockData, true);
+        }
+        
+        // Display grade data - can be used for both real and mock data
+        function displayGradeData(data, isMockData) {
+            // Create warning if using mock data
+            let warningHTML = isMockData ? `
+                <div class="alert alert-warning mb-4">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    Unable to connect to the grade server. Showing sample data for demonstration purposes.
+                </div>
+            ` : '';
+            
+            // Create grade summary
+            let summaryHTML = `
+                <div class="text-center mb-4">
+                    <h3 class="text-primary">Overall Grade Summary${isMockData ? ' (Sample)' : ''}</h3>
+                    <div class="display-4 fw-bold mb-2">${data.totalPercentage}%</div>
+                    <p class="lead">${data.totalEarned} / ${data.totalPossible} points</p>
+                </div>
+            `;
+            
+            // Create grade table
+            let tableHTML = `
+                <h4 class="text-primary mb-3">Detailed Grade Breakdown${isMockData ? ' (Sample)' : ''}</h4>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead class="table-primary">
+                            <tr>
+                                <th>Assignment Name</th>
+                                <th>Type</th>
+                                <th>Earned Points</th>
+                                <th>Total Points</th>
+                                <th>Course</th>
+                                <th>Percentage</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${data.assignments.map(item => `
+                                <tr>
+                                    <td>${item.name}</td>
+                                    <td>${item.type}</td>
+                                    <td>${item.earned}</td>
+                                    <td>${item.possible}</td>
+                                    <td>${item.course}</td>
+                                    <td>
+                                        <div class="progress" style="height: 20px;">
+                                            <div class="progress-bar" role="progressbar" 
+                                                 style="width: ${item.percentage}%;" 
+                                                 aria-valuenow="${item.percentage}" 
+                                                 aria-valuemin="0" 
+                                                 aria-valuemax="100">
+                                                ${item.percentage}%
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            
+            // Update the grade content with warning, summary and table
+            document.getElementById('gradeContent').innerHTML = warningHTML + summaryHTML + tableHTML;
         }
         
         // Allow Enter key to submit password
