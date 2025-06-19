@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>🐾 Reconnaissance Cohort One – Orientation Debrief 🐱</title>
+<style>
+  body {
+    font-family: "Courier New", Courier, monospace;
+    background-color: #fff8f0;
+    color: #3b2f2f;
+    margin: 0;
+    padding: 20px;
+  }
+  .container {
+    max-width: 700px;
+    margin: auto;
+    background: #f9f3ee;
+    padding: 25px 35px;
+    border-radius: 12px;
+    box-shadow: 0 0 20px #d6c4b1;
+    position: relative;
+  }
+  h1, h2 {
+    color: #d2691e;
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+  pre {
+    white-space: pre-wrap;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #5a4337;
+  }
+  footer {
+    max-width: 700px;
+    margin: 30px auto 10px auto;
+    text-align: center;
+  }
+  button.chat-btn {
+    background-color: #d2691e;
+    color: white;
+    border: none;
+    padding: 12px 22px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border-radius: 25px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px #b35817;
+    transition: background-color 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  button.chat-btn:hover {
+    background-color: #a35414;
+  }
+  /* Password overlay styles */
+  #password-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right:0;
+    bottom:0;
+    background: #3b2f2fdd;
+    color: #fff3e6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    flex-direction: column;
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+  }
+  #password-overlay h2 {
+    font-size: 2rem;
+    margin-bottom: 10px;
+  }
+  #password-overlay input {
+    padding: 12px 15px;
+    font-size: 1.3rem;
+    border-radius: 12px;
+    border: none;
+    margin-top: 10px;
+    width: 220px;
+    text-align: center;
+  }
+  #password-overlay button {
+    margin-top: 15px;
+    padding: 12px 25px;
+    font-size: 1.3rem;
+    border: none;
+    border-radius: 20px;
+    background-color: #d2691e;
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 4px 7px #b35817;
+    transition: background-color 0.3s ease;
+  }
+  #password-overlay button:hover {
+    background-color: #a35414;
+  }
+  #error-msg {
+    color: #ff6f6f;
+    margin-top: 8px;
+    font-weight: bold;
+  }
+</style>
+</head>
+<body>
+  <div id="password-overlay">
+    <h2>🐱 Enter Password to Access Report 🐾</h2>
+    <input type="password" id="password-input" placeholder="Password" />
+    <button onclick="checkPassword()">Unlock</button>
+    <div id="error-msg"></div>
+  </div>
+
+  <div class="container" id="report-content" style="display:none;">
+    <pre>
+🧾 Reconnaissance Cohort One – Orientation Debrief
+Subject: Cadet X (ID 2417691)
+Operation: The Nova Signal
+—
+🎯 Objective: To trace and decode a covert message hidden within Cadet onboarding files and confirm your readiness for long-range contact and investigation duties.
+—
+✅ Mission Progress Summary:
+1. Decryption & Signal Recognition
+   * Decrypted an encrypted message (monoalphabetic substitution cipher) originating from “Cadet Caesar.”
+   * Message provided a warning and outlined 3 investigative tasks.
+2. Fatal Report Identification
+   * Located the only deadly incident in the interpersonal report logs: Report ID #70.
+   * Confirmed that Cadet Nova suffered decompression injury during an EVA simulation due to collar seal failure.
+3. Digital Confirmation
+   * Submitted the seed word “ember” to the hidden Nova archive (nova.html).
+   * Uploaded this chat log as verification—signaling completion of the orientation trial.
+4. Deep-Dive Investigation (Voluntary Phase)
+   * Conducted OCR scans on visual records: • IMG‐01: Locker/suit storage—partially recovered text like "SS", “FAR END” (Nova’s gear location). • IMG‐02: Medical interface—possible alert status ("Alert 4"). • IMG‐04: EVA simulation—visual representation of the fatal event. • IMG‐05: Surveillance/log overlay—“Widdaitames,” likely a degraded header or data tag.
+—
+📌 Outcome: Cadet X successfully completed the orientation cipher path and pursued further investigation into Cadet Nova’s fate. Though Nova's decompression was unpreventable, X reconstructed her final timeline with diligence, respect, and analytical clarity.
+—
+🧬 Recommendation: Cadet X is prepared for tier-two exploratory simulations and first-contact preparation. Consider tagging this log as evidence of investigative and forensic training readiness.
+—
+Filed: Unity Beyond Stars
+By: HIF‐Lumen, Observer Instance 3.2
+Status: Mission Complete – Echo Confirmed
+    </pre>
+  </div>
+
+  <footer>
+    <button class="chat-btn" id="chat-button" onclick="openChat()">🐾 HIF-Lumen Chat</button>
+  </footer>
+
+<script>
+  function checkPassword() {
+    const input = document.getElementById('password-input').value;
+    const overlay = document.getElementById('password-overlay');
+    const content = document.getElementById('report-content');
+    const errorMsg = document.getElementById('error-msg');
+
+    if(input === 'ember') {
+      overlay.style.display = 'none';
+      content.style.display = 'block';
+      errorMsg.textContent = '';
+    } else {
+      errorMsg.textContent = 'Incorrect password. Please try again.';
+    }
+  }
+
+  // Allow Enter key to submit password
+  document.getElementById('password-input').addEventListener('keyup', function(event) {
+    if (event.key === 'Enter') {
+      checkPassword();
+    }
+  });
+
+  // Placeholder for your chat link
+  function openChat() {
+    // Replace '#' with your actual chat URL later
+    window.location.href = 'https://chatgpt.com/share/682f3b7a-0df8-8008-973b-455466d9e03f';
+  }
+</script>
+</body>
+</html>
